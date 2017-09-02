@@ -12,7 +12,7 @@ sbt test
 
 ## The problem
 
-As anticipated, the path-dependend type `this.type` is translated into
+As anticipated, the path-dependent type `this.type` is translated into
 `records.Record{name: String}(r)` (a singleton type?),
 which does not seem to equal the `Record{name: String}` required by the type class.
 Therefore, implicit resolution fails.
