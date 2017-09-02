@@ -12,9 +12,10 @@ $sbt test
 ```
 
 ## What works
-Now the update function actually works as indicated by test `t1`
+Now the update function actually works as indicated by test `t1`.
+(you have to comment out `t2` to see that though)
 
-REPL-session:
+The following REPL-session also proves the point:
 ```
 scala> import records.Record
 import records.Record
