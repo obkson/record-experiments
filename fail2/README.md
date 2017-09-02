@@ -13,7 +13,7 @@ $sbt test
 
 ## What works
 Now the update function actually works as indicated by test `t1`.
-(you have to comment out `t2` to see that though)
+(you have to comment out `t2` and `t3` to see that though)
 
 The following REPL-session also proves the point:
 ```
