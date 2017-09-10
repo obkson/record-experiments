@@ -13,3 +13,6 @@ or
 $sbt run
 ```
 
+## Extra
+
+Furthermore, Main.scala contains the closest solution I've found for partially applied context-bounds. But I don't know if its that much more readable?
