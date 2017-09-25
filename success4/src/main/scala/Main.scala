@@ -44,21 +44,23 @@ object Main {
 
     {
       println("example 1:")
-      val a = Record("field"->new B()).asInstanceOf[Record{val field: B}]
-      println("field of type B: " + (a.field: B))
-      val b = upcastingUpdate1(a)
+      val r = Record("field"->new B()).asInstanceOf[Record{val field: B}]
+      println("field of type B: " + (r.field: B))
 
-      // println("field of type B: " + (b.field: B)) // Error: found: misc.A, required: required: misc.B
-      println("field of type A: " + (b.field: A)) // This is the sound return type
+      val s = upcastingUpdate1(r)
+
+      // println("field of type B: " + (s.field: B)) // Error: found: misc.A, required: required: misc.B
+      println("field of type A: " + (s.field: A)) // This is the sound return type
     }
     {
       println("example 2:")
-      val a = Record("field"->new B()).asInstanceOf[Record{val field: B}]
-      println("field of type B: " + (a.field: B))
-      val b = upcastingUpdate2(a)
+      val r = Record("field"->new B()).asInstanceOf[Record{val field: B}]
+      println("field of type B: " + (r.field: B))
 
-      // println("field of type B: " + (b.field: B)) // Error: found: misc.A, required: required: misc.B
-      println("field of type A: " + (b.field: A)) // This is the sound return type
+      val s = upcastingUpdate2(r)
+
+      // println("field of type B: " + (s.field: B)) // Error: found: misc.A, required: required: misc.B
+      println("field of type A: " + (s.field: A)) // This is the sound return type
     }
   }
 
@@ -88,7 +90,7 @@ object Main {
     //      Out = R merged with ("age" -> Int)
     //    }
     // which is in scope here.
-    // However, in this local scope, all we know is that Out <: Record.
+    // However, in this local scope, all we know is that Out <: PolymorphicUpdater#Out <: Record.
     //
     // The type of s will be the intersection of the UpperBoundUpdater and the PolymorphicUpdater
     // which in practice is Record{val name: String; val age: Int}
@@ -97,7 +99,7 @@ object Main {
     println("name after update: " + s.name)
     // and the newly added age-field
     println("age after update: " + s.age)
-    // On printing the record, ALL field will be taken into consideration (include height)
+    // On printing the record, ALL runtime fields will be taken into consideration (include height)
     println("the whole record: " + s)
 
     // We can also cast to the expected type
@@ -106,22 +108,26 @@ object Main {
     // And return the updated record s
     s
     // The inferred type at the *call-site* will be more specific than
-    // Record{val name: String; val age: Int} however, since there we know the actual value of R and
-    // can calculate the proper Out type of PolymorphicUpdater.
+    //    Record{val name: String; val age: Int}
+    // since there we know the actual type of R and can calculate the proper Out type of
+    //    PolymorphicUpdater.
   }
 
 
-  // If we want/need to get the explicit polymorphic return type of the function, we can instead
+  // If we want/need to express the explicit polymorphic return type of the function, we can instead
   // declare the PolymorphicUpdater as an explicit implicit (no pun intended) to get a reference
   // to poly.Out
   def addAgeWithExplicitReturnType[R <: Record{val name: String}](r: R, age: Int)(implicit poly: PolymorphicUpdater[R, "age", Int]): poly.Out = {
     r.update("age", age)
   }
 
-  // We can also update existing fields
+  // We can also update existing fields (type-checked and sound)
   def birthday[R <: Record{val age: Int} : Updater["age", Int]](r: R) = r.update("age", r.age+1)
 
   // Existing fields are casted correctly, regardless of if we know about them or not
+  // Here r.field might already exist but we don't care since we just overwrite it with type A
   def upcastingUpdate1[R <: Record : Updater["field", A]](r: R) = r.update("field", new A())
+  // Here we know that r.field exists, but it might have type B <: A at the call site.
+  // That doesn't matter though, as the returned record type will have (field: A) regardless.
   def upcastingUpdate2[R <: Record{val field: A} : Updater["field", A]](r: R) = r.update("field", new A())
 }
