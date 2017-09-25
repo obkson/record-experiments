@@ -30,7 +30,7 @@ object PolymorphicUpdater {
   }
 
   // Can update already existing fields as well
-  // (side-note: in the example in Main, the outer scope / call-site is aware of the height field)
+  // (side-note: in the example in Main, the outer scope / call-site is aware of the name and height fields)
   implicit val nameStringHeightDoubleAgeInt_ageInt: PolymorphicUpdater[Record{val name: String; val height: Double; val age: Int}, "age", Int] {
     type Out = Record{val name: String; val height: Double; val age: Int}
   } = new PolymorphicUpdater[Record{val name: String; val height: Double; val age: Int}, "age", Int] {

@@ -30,7 +30,7 @@ object UpperBoundUpdater {
   }
 
   // Can update already existing fields as well
-  // (side-note: in the example in Main, the local scope is not aware of neither name nor field)
+  // (side-note: in the example in Main, the local scope is not aware of neither name nor height)
   implicit val ageInt_ageInt: UpperBoundUpdater[Record{val age: Int}, "age", Int] {
     type Out = Record{val age: Int}
   } = new UpperBoundUpdater[Record{val age: Int}, "age", Int] {
